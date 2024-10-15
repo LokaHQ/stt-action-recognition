@@ -271,9 +271,20 @@ def returnWeights(annotation_dict='dataset/annotation_dict.json', labels_dict='d
 
 if __name__ == "__main__":
 
-    basketball_dataset = BasketballDataset(annotation_dict="dataset/annotation_dict.json",
-                                           augmented_dict="dataset/augmented_annotation_dict.json")
+    # For faster loading and training
+    convertAllVideoTensor(path="dataset/annotation_dict.json",
+                          data_dir="dataset/examples/",
+                          output_dir="tensor-dataset/")
+    
+    dataset = BasketballDatasetTensor(annotation_dict="dataset/annotation_dict.json",
+                                      data_dir="tensor-dataset/",
+                                      poseData=False)
+    
+    print(len(dataset))
+    
+    #basketball_dataset = BasketballDataset(annotation_dict="dataset/annotation_dict.json",
+    #                                       augmented_dict="dataset/augmented_annotation_dict.json")
 
-    print(basketball_dataset[1]['action'])
-    print(basketball_dataset[1]['class'])
-    print(len(basketball_dataset))
+    # print(basketball_dataset[1]['action'])
+    # print(basketball_dataset[1]['class'])
+    # print(len(basketball_dataset))

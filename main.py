@@ -22,7 +22,7 @@ args = EasyDict({
     'detector': "tracker",
 
     # Path Params
-    'videoPath': "videos/lebron_shoots.mp4",
+    'videoPath': "videos/05397b4a-2f5a-11ef-8453-0242bac85d4d_segment29217.mp4",
 
     # Player Tracking
     'classes': ["person"],
@@ -31,7 +31,7 @@ args = EasyDict({
     'singleTracker': False,
 
     # Court Line Detection
-    'draw_line': False,
+    'draw_line': True,
 
     # YOLOV3 Detector
     'weights': "yolov3.weights",
@@ -43,7 +43,8 @@ args = EasyDict({
     'base_model_name': 'r2plus1d_multiclass',
     'pretrained': True,
     'lr': 0.0001,
-    'start_epoch': 19,
+    # Must Be Changed!
+    'start_epoch': 15,
     'num_classes': 10,
     'labels': {"0" : "block", "1" : "pass", "2" : "run", "3" : "dribble", "4" : "shoot", "5" : "ball in hand", "6" : "defense", "7" : "pick" , "8" : "no_action" , "9" : "walk" , "10" : "discard"},
     'model_path': "model_checkpoints/r2plus1d_augmented-2/",

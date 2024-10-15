@@ -1,5 +1,6 @@
 import os
 import torch
+import numpy as np
 import matplotlib.pyplot as plt
 
 def init_session_history(args):
@@ -59,7 +60,6 @@ def load_weights(model, args):
 
     return model
 
-
 def plot_curves(base_model_name, train_loss, val_loss, train_acc, val_acc, train_f1, val_f1, epochs):
     """
     Given progression of train/val loss/acc, plots curves
@@ -74,6 +74,33 @@ def plot_curves(base_model_name, train_loss, val_loss, train_acc, val_acc, train
     :return: None
     """
 
+    def to_numpy(tensor):
+        """Helper function to ensure tensor is moved to CPU and converted to numpy if necessary"""
+        if isinstance(tensor, torch.Tensor):
+            print(f"Converting tensor from device: {tensor.device}")  # Debug print to check the tensor device
+            if tensor.is_cuda:
+                tensor = tensor.cpu()  # Ensure tensor is on CPU before converting to NumPy
+            return tensor.numpy()  # Convert to numpy
+        elif isinstance(tensor, list):
+            return np.array(tensor)  # Convert list to numpy array
+        return tensor
+
+    # Convert all tensors or lists to NumPy arrays if needed
+    train_loss = to_numpy(train_loss)
+    val_loss = to_numpy(val_loss)
+    train_acc = to_numpy(train_acc)
+    val_acc = to_numpy(val_acc)
+    train_f1 = to_numpy(train_f1)
+    val_f1 = to_numpy(val_f1)
+    epochs = to_numpy(epochs)
+
+    # Add another debug print to verify the shapes of the data
+    print(f"train_loss shape: {train_loss.shape}, val_loss shape: {val_loss.shape}")
+    print(f"train_acc shape: {train_acc.shape}, val_acc shape: {val_acc.shape}")
+    print(f"train_f1 shape: {train_f1.shape}, val_f1 shape: {val_f1.shape}")
+    print(f"epochs shape: {epochs.shape}")
+
+    # Plot the curves
     plt.figure(figsize=(15, 5))
 
     plt.subplot(131)
@@ -97,12 +124,11 @@ def plot_curves(base_model_name, train_loss, val_loss, train_acc, val_acc, train
     plt.plot(epochs, val_f1, label='val f1 score')
     plt.xlabel('epochs')
     plt.ylabel('f1 score')
-    plt.title('f1 curves')
+    plt.title('F1 Score curves')
     plt.legend()
 
     plt.suptitle(f'Session: {base_model_name}')
 
-    #plt.savefig('previous_run.png')
     plt.show()
 
 def write_history(
@@ -215,7 +241,6 @@ def read_history(history_path):
             plot_epoch = []
 
             for line in session_data:
-
                 if 'arguments' in line:
                     print("Hyperparameters:")
                     print(line)
@@ -223,7 +248,14 @@ def read_history(history_path):
                 # case for getting checkpoint epoch
                 if 'checkpoint' in line:
                     print(line)
-                    plot_epoch.append(int(line.split('_')[-2]))
+                    parts = line.split('_')
+                    # Check if the second-to-last part is a number
+                    for part in parts:
+                        if part.isdigit():
+                            plot_epoch.append(int(part))
+                            break
+                    else:
+                        print(f"Skipping checkpoint line, no valid epoch found: {line}")
 
                 # case for getting train data for epoch
                 elif 'train' in line and 'arguments' not in line:
@@ -252,4 +284,4 @@ def read_history(history_path):
             )
 
 if __name__ == "__main__":
-    read_history("../histories/history_r2plus1d_overfit.txt")
+    read_history("/home/ubuntu/stt-action-recognition/histories/history_r2plus1d_augmented-2.txt")

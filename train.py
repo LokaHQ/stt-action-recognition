@@ -27,10 +27,11 @@ args = EasyDict({
 
     # training/model params
     'lr': 0.0001,
-    'start_epoch': 1,
-    'num_epochs': 25,
+    'start_epoch': 14,
+    # recommended -> 25
+    'num_epochs': 17,
     'layers_list': ['layer3', 'layer4', 'fc'],
-    'continue_epoch': False,
+    'continue_epoch': True,
 
     # Dataset params
     'num_classes': 10,
@@ -332,19 +333,19 @@ if __name__ == "__main__":
     print("Best Training Loss: ", min(train_loss_history), "Epoch: ", train_loss_history.index(min(train_loss_history)))
 
     # Plot Final Curve
-    plot_curves(
-        args.base_model_name,
-        train_loss_history,
-        val_loss_history,
-        train_acc_history,
-        val_acc_history,
-        train_f1_score,
-        val_f1_score,
-        plot_epoch
-    )
+    # plot_curves(
+    #     args.base_model_name,
+    #     train_loss_history,
+    #     val_loss_history,
+    #     train_acc_history,
+    #     val_acc_history,
+    #     train_f1_score,
+    #     val_f1_score,
+    #     plot_epoch
+    # )
 
     # Read History
-    read_history(args.history_path)
+    #read_history(args.history_path)
 
     # Check Accuracy with Test Set
     check_accuracy(test_loader, model)
